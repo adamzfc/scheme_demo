@@ -43,23 +43,62 @@
             (my-uary-map fn (cdr seq)))))
 
 ; 1.1.7
-(define (sqrt-iter guess x)
-  (if (good-enough? guess x)
-      guess
-      (squrt-iter (improve guess x)
-                  x)))
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
 
 (define (improve guess x)
   (average guess (/ x guess)))
 
 (define (average x y)
-  (/ (+ x y) 2))
 
+  (/ (+ x y) 2))
 (define (good-enough? guess x)
   (< (abs (- (square guess) x)) 0.001))
 
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                  x)))
+
 ;(define (good-enough?2 guess x)
 
-(define (sqrt x)
-  (sqrt-iter 1.0 x))
 ;
+
+(define (translate points delta)
+  (map (lambda (x)
+         (+ x delta))
+       points))
+(define (translate2 points delta)
+  (define (shift-by x)
+    (+ x delta))
+  (map shift-by points))
+
+; (define (sum x y)
+  ; (+ x y))
+; (define sum
+  ; (lambda (x y) (+ x y)))
+
+(define (ps set)
+  (if (null? set) '(())
+    (append (ps (cdr set))
+            (map (lambda (subset)
+                   (cons (car set) subset))
+                 (ps (cdr set))))))
+(define (ps set)
+  (if (null? set) '(())
+    (let ((ps-rest (ps (cdr set))))
+      (append ps-rest
+              (map (lambda (subset)
+                     (cons (car set) subset))
+                   ps-rest)))))
+(define (permute items)
+  (if (null? items) '(())
+    (apply append
+           (map (lambda (elem)
+                  (map (lambda (permutation)
+                         (cons elem permutation))
+                       (permute (remove items elem))))
+                items))))
+; '(1 2 3)
+; (cons 1 (cons 2 (cons 3 '())))
